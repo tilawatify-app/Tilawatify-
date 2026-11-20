@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      match /{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+    // Curated metadata is public to read, but only trusted admin tooling may publish it.
+    match /reciters/{id} { allow read: if true; allow write: if false; }
+    match /surahs/{id} { allow read: if true; allow write: if false; }
+    match /recordings/{id} { allow read: if resource.data.licensed == true; allow write: if false; }
+    match /subscriptions/{id} { allow read: if request.auth != null && request.auth.uid == id; allow write: if false; }
+  }
+}

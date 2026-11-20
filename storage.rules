@@ -1,0 +1,8 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // No client-side uploads/downloads until a licensed catalog and entitlement
+    // service are deployed. Authorized publishing should use trusted admin tools.
+    match /{allPaths=**} { allow read, write: if false; }
+  }
+}
